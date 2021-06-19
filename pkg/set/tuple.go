@@ -1,7 +1,19 @@
 package set
 
+import (
+	"errors"
+	"math"
+)
+
+const EPSILON = 0.00001
+
 type Tuple struct {
 	X, Y, Z, W float64
+}
+
+// Tuple constructor
+func NewTuple(x float64, y float64, z float64, w float64) Tuple {
+	return Tuple{X: x, Y: y, Z: z, W: w}
 }
 
 func (t Tuple) IsPoint() bool {
@@ -13,9 +25,51 @@ func (t Tuple) IsVector() bool {
 }
 
 func Point(x float64, y float64, z float64) Tuple {
-	return Tuple{X: x, Y: y, Z: z, W: 1.0}
+	return NewTuple(x, y, z, 1.0)
 }
 
 func Vector(x float64, y float64, z float64) Tuple {
-	return Tuple{X: x, Y: y, Z: z, W: 0.0}
+	return NewTuple(x, y, z, 0.0)
+}
+
+func Equals(a, b Tuple) bool {
+	equalX := math.Abs(a.X-b.X) < EPSILON
+	equalY := math.Abs(a.Y-b.Y) < EPSILON
+	equalZ := math.Abs(a.Z-b.Z) < EPSILON
+	equalW := math.Abs(a.W-b.W) < EPSILON
+	return equalX && equalY && equalZ && equalW
+}
+
+// Add Tuples. Making sure W does the apropriat behaviour
+// Sum of 2 vectors give a vertor. vertor point give point.
+// Sum of 2 points makes no sense.
+func (t Tuple) Add(b Tuple) Tuple {
+	if t.IsPoint() && b.IsPoint() {
+		err := errors.New("YOU CANNOT ADD 2 POINTS")
+		panic(err)
+	}
+	t.X += b.X
+	t.Y += b.Y
+	t.Z += b.Z
+	t.W += b.W
+	return t
+}
+
+// Subtracting Tuples. 
+func (t Tuple) Sub(b Tuple) Tuple {
+  if t.IsVector() && b.IsPoint() {
+		err := errors.New("YOU CANNOT SUBTRACT A VECTOR - POINT")
+		panic(err)
+	}
+	t.X -= b.X
+	t.Y -= b.Y
+	t.Z -= b.Z
+	t.W -= b.W
+	return t
+}
+
+// Negating Tuple
+// In vector case: vector pointing in the exact oposite direction
+func (t Tuple) Negate() Tuple {
+	return NewTuple(0, 0, 0, 0).Sub(t)
 }

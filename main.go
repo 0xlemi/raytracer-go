@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	u := set.Tuple{X:1.0, Y:2.0, Z:3.0, W:4.0}
+	u := set.NewTuple(1.0, 2.0, 3.0, 4.0)
 	fmt.Println(u)
 }
