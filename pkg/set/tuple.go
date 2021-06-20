@@ -55,9 +55,9 @@ func (t Tuple) Add(b Tuple) Tuple {
 	return t
 }
 
-// Subtracting Tuples. 
+// Subtracting Tuples.
 func (t Tuple) Sub(b Tuple) Tuple {
-  if t.IsVector() && b.IsPoint() {
+	if t.IsVector() && b.IsPoint() {
 		err := errors.New("YOU CANNOT SUBTRACT A VECTOR - POINT")
 		panic(err)
 	}
@@ -73,3 +73,79 @@ func (t Tuple) Sub(b Tuple) Tuple {
 func (t Tuple) Negate() Tuple {
 	return NewTuple(0, 0, 0, 0).Sub(t)
 }
+
+// Multilpy tuple for scalar
+func (t Tuple) Multi(s float64) Tuple {
+	t.X *= s
+	t.Y *= s
+	t.Z *= s
+	t.W *= s
+	return t
+}
+
+// Divide tuple for scalar
+func (t Tuple) Div(s float64) Tuple {
+	t.X /= s
+	t.Y /= s
+	t.Z /= s
+	t.W /= s
+	return t
+}
+
+func (t Tuple) Magnitude() float64 {
+	if !t.IsVector() {
+		err := errors.New("YOU CAN ONLY GET MAGNITUD OF A VECTOR")
+		panic(err)
+	}
+
+	total := 0.0
+	nums := []float64{t.X, t.Y, t.Z}
+
+	for _, num := range nums {
+		total += num * num
+	}
+	return math.Sqrt(total)
+}
+
+func (t Tuple) Normalize() Tuple {
+	if !t.IsVector() {
+		err := errors.New("YOU CAN ONLY NORMALIZE OF A VECTOR")
+		panic(err)
+	}
+
+	magnitud := t.Magnitude()
+	t.X /= magnitud
+	t.Y /= magnitud
+	t.Z /= magnitud
+	t.W /= magnitud
+
+	return t
+}
+
+func (t Tuple) Dot(v Tuple) float64 {
+	if !(t.IsVector() && v.IsVector()) {
+		err := errors.New("YOU CAN ONLY GET DOT PRODUCTS OF VECTORS")
+		panic(err)
+	}
+
+	x := (t.X * v.X)
+	y := (t.Y * v.Y)
+	z := (t.Z * v.Z)
+	w := (t.W * v.W)
+
+	return x + y + z + w
+}
+
+func (t Tuple) Cross(v Tuple) Tuple {
+  if !(t.IsVector() && v.IsVector()) {
+		err := errors.New("YOU CAN ONLY GET DOT PRODUCTS OF VECTORS")
+		panic(err)
+	}
+
+	x := (t.Y * v.Z) - ( t.Z * v.Y)
+	y := (t.Z * v.X) - ( t.X * v.Z)
+	z := (t.X * v.Y) - ( t.Y * v.X)
+
+	return Vector(x, y, z)
+}
+

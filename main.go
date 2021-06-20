@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/lemidev/raytracer/pkg/set"
 )
 
 func main() {
-	u := set.NewTuple(1.0, 2.0, 3.0, 4.0)
-	fmt.Println(u)
+	x := set.NewTuple(3, 2.5, -14, 6)
+
+	nums := []float64{x.X, x.Y, x.Z}
+	for _, num := range nums {
+		fmt.Println(num)
+	}
 }

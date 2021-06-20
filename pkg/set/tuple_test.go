@@ -1,6 +1,10 @@
 package set
 
-import "testing"
+import (
+	// "fmt"
+	"math"
+	"testing"
+)
 
 func TestParameterValues(t *testing.T) {
 	tuple := Tuple{X: 1.0, Y: 2.5, Z: 3.0, W: 0.0}
@@ -170,4 +174,151 @@ func TestNegatingTuple(t *testing.T) {
 	}
 }
 
+func TestScalarMultiplication(t *testing.T) {
+	expected := NewTuple(-2, -4, 6, 4)
+	actual := NewTuple(-1, -2, 3, 2).Multi(2)
 
+	if actual != expected {
+		t.Errorf("TestScalarMultiplication test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestScalarDivision(t *testing.T) {
+	expected := NewTuple(3, 2.5, -14, 6)
+	actual := NewTuple(6, 5, -28, 12).Div(2)
+
+	if actual != expected {
+		t.Errorf("TestScalarDivision test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeVector100(t *testing.T) {
+	expected := 1.0
+	actual := Vector(1, 0, 0).Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitudeVector100 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeVector010(t *testing.T) {
+	expected := 1.0
+	actual := Vector(0, 1, 0).Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitude010 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeVector001(t *testing.T) {
+	expected := 1.0
+	actual := Vector(0, 0, 1).Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitude001 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeVector123(t *testing.T) {
+	expected := math.Sqrt(14)
+	actual := Vector(1, 2, 3).Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitude123 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeVectorNeg123(t *testing.T) {
+	expected := math.Sqrt(14)
+	actual := Vector(-1, -2, -3).Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitudeNeg123 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestPanicMagnitudeOfRandTuple(t *testing.T) {
+	defer func() { recover() }()
+
+	NewTuple(1, 2, 3, 4).Magnitude()
+
+	t.Errorf("TestPanicMagnitudeOfRandTuple test error. Should have panicked")
+}
+
+func TestNormalizeVector400(t *testing.T) {
+	expected := Vector(1, 0, 0)
+	actual := Vector(4, 0, 0).Normalize()
+
+	if actual != expected {
+		t.Errorf("TestNormalizeVector400 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestNormalizeVector123(t *testing.T) {
+	expected := Vector(0.26726, 0.53452, 0.80178)
+	actual := Vector(1, 2, 3).Normalize()
+
+	if !Equals(actual, expected) {
+		t.Errorf("TestNormalizeVector123 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMagnitudeOfNormalizedVector(t *testing.T) {
+	expected := 1.0
+	actual := Vector(1, 2, 3).Normalize().Magnitude()
+
+	if actual != expected {
+		t.Errorf("TestMagnitudeOfNormalizedVector test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestPanicNormalizeRandTuple(t *testing.T) {
+	defer func() { recover() }()
+
+	NewTuple(1, 2, 3, 5).Normalize()
+
+	t.Errorf("TestPanicNormalizeRandTuple test error. Should have panicked")
+}
+
+func TestDotProduct123and234(t *testing.T) {
+	expected := 20.0
+	actual := Vector(1, 2, 3).Dot(Vector(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestDotProduct123and234 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestPanicDotForNotVectors(t *testing.T) {
+	defer func() { recover() }()
+
+	Vector(1, 2, 3).Dot(Point(2, 3, 4))
+
+	t.Errorf("TestPanicDotForNotVectors test error. Should have panicked")
+}
+
+func TestCrossProduct1(t *testing.T) {
+	expected := Vector(-1, 2, -1)
+	actual := Vector(1, 2, 3).Cross(Vector(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestCrossProduct1 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestCrossProduct2(t *testing.T) {
+	expected := Vector(1, -2, 1)
+	actual := Vector(2, 3, 4).Cross(Vector(1, 2, 3))
+
+	if actual != expected {
+		t.Errorf("TestCrossProduct2 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestPanicCrossProduct(t *testing.T) {
+	defer func() { recover() }()
+
+	Vector(1, 2, 3).Cross(Point(2, 3, 4))
+
+	t.Errorf("TestPanicCrossProduct test error. Should have panicked")
+}
