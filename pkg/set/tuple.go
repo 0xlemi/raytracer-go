@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-const EPSILON = 0.00001
+const EPSILON float64 = 0.00001
 
 type Tuple struct {
 	X, Y, Z, W float64
