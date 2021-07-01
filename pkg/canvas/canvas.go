@@ -2,16 +2,17 @@ package canvas
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/lemidev/raytracer/pkg/tuple"
 )
 
 type Canvas struct {
-	Width, Height uint8
+	Width, Height uint16
 	Pixels        [][]tuple.Color
 }
 
-func NewCanvas(width, height uint8) *Canvas {
+func NewCanvas(width, height uint16) *Canvas {
 	// Set columns count first, or row lenght
 	// [0, 0, ...]
 	pixels := make([][]tuple.Color, width)
@@ -27,45 +28,56 @@ func NewCanvas(width, height uint8) *Canvas {
 	return &Canvas{Width: width, Height: height, Pixels: pixels}
 }
 
-func (c *Canvas) PixelAt(x, y uint8) tuple.Color {
+func (c *Canvas) PixelAt(x, y uint16) tuple.Color {
 	return c.Pixels[x][y]
 }
 
-func (c *Canvas) WritePixel(x uint8, y uint8, color tuple.Color) {
+func (c *Canvas) WritePixel(x uint16, y uint16, color tuple.Color) {
 	c.Pixels[x][y] = color
 }
 
 func (c *Canvas) WriteAllPixels(color tuple.Color) {
-  for x, row := range c.Pixels{
-		for y:= range row {
+	for x, row := range c.Pixels {
+		for y := range row {
 			c.Pixels[x][y] = color
 		}
 	}
 }
 
 func (c *Canvas) ToPPM() string {
-	s := "P3\n" + fmt.Sprintf("%d %d", c.Width, c.Height) + "\n" + "255\n"
+	var s strings.Builder
+	// Headers
+	s.WriteString("P3\n")
+	s.WriteString(fmt.Sprintf("%d %d", c.Width, c.Height))
+	s.WriteString("\n")
+	s.WriteString("255\n")
 
-	lineBreakCounter := 0
-	for _, row := range c.Pixels {
-		for _, color := range row {
+	// lineBreakCounter := 0
+	var color tuple.Color
+	var colorString string
+	for i := uint16(0); i < c.Height; i++ {
+		s.WriteString("\n")
+		for e := uint16(0); e < c.Width; e++ {
 			// So it nevers go over 70 Characters each line
 			// ((colors(5 * 3) * 3 (if all are 3 digit number)) + whiteSpace(5 * 3)
 			// max posible characters = 60
-			if lineBreakCounter >= 5 {
-				s += "\n"
-				lineBreakCounter = 0
-			}
-			lineBreakCounter++
-			s += fmt.Sprintf("%d %d %d ",
+			// if lineBreakCounter >= 5 {
+			// 	// s.WriteString("\n")
+			// 	lineBreakCounter = 0
+			// }
+			// lineBreakCounter++
+
+			color = c.PixelAt(e, i)
+			colorString = fmt.Sprintf("%d %d %d ",
 				uint8(color.Red),
 				uint8(color.Green),
 				uint8(color.Blue),
 			)
+			s.WriteString(colorString)
 		}
 	}
-	s += "\n"
-	return s
+	s.WriteString("\n")
+	return s.String()
 }
 
 // Show the canvas in console, in readable way

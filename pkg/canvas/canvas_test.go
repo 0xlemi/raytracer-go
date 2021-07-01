@@ -9,8 +9,8 @@ import (
 )
 
 func TestCreateCanvas(t *testing.T) {
-	expected := [2]uint8{11, 13}
-	actual := [2]uint8{(*NewCanvas(11, 13)).Width, (*NewCanvas(11, 13)).Height}
+	expected := [2]uint16{11, 13}
+	actual := [2]uint16{(*NewCanvas(11, 13)).Width, (*NewCanvas(11, 13)).Height}
 
 	if actual != expected {
 		t.Errorf("TestCreateCanvas test error. Expected %v, got %v", expected, actual)
