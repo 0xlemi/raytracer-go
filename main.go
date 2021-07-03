@@ -5,38 +5,39 @@ import (
 	// "os"
 
 	// c "github.com/lemidev/raytracer/pkg/canvas"
-	p "github.com/lemidev/raytracer/pkg/physical"
-	t "github.com/lemidev/raytracer/pkg/tuple"
+	// p "github.com/lemidev/raytracer/pkg/physical"
+	// t "github.com/lemidev/raytracer/pkg/tuple"
 )
 
 func main() {
 
-	start := t.NewPoint(0, 1, 0)
-	velocity := t.NewVector(1, 1.8, 0).Normalize()
+	// start := t.NewPoint(0, 1, 0)
+	// velocity := t.NewVector(1, 1.8, 0).Normalize()
 
-	proj := p.NewProjectile(start, velocity)
+	// proj := p.NewProjectile(start, velocity)
 
-	gravity := t.NewVector(0, -0.1, 0)
-	wind := t.NewVector(-0.01, 0, 0)
+	// gravity := t.NewVector(0, -0.1, 0)
+	// wind := t.NewVector(-0.01, 0, 0)
 
-	env := p.NewEnvironment(gravity, wind)
+	// env := p.NewEnvironment(gravity, wind)
 
-	// canvas := c.NewCanvas(8, 6)
-	// width 450
-	// heigt 250
+	// // canvas := c.NewCanvas(8, 6)
+	// // width 450
+	// // heigt 250
 
-	actual := []t.Point{}
-	for 0 < proj.Position.Y {
-		actual = append(actual, proj.Position)
-		// x := uint16(proj.Position.X)
-		// y := (canvas.Height - 1) - uint16(proj.Position.Y)
-		// y := uint16(proj.Position.Y)
-		// fmt.Println([2]uint16{x, y})
-		proj.Tick(env)
-		// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
-	}
+	// actual := []t.Point{}
+	// for 0 < proj.Position.Y {
+	// 	actual = append(actual, proj.Position)
+	// 	// x := uint16(proj.Position.X)
+	// 	// y := (canvas.Height - 1) - uint16(proj.Position.Y)
+	// 	// y := uint16(proj.Position.Y)
+	// 	// fmt.Println([2]uint16{x, y})
+	// 	proj.Tick(env)
+	// 	// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
+	// }
 
-	fmt.Println(actual)
+	fmt.Print(fmt.Sprint([4][4]float64{}))
+	// fmt.Println([4][4]float64{})
 
 	// ppmData := canvas.ToPPM()
 

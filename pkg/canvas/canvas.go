@@ -56,7 +56,6 @@ func (c *Canvas) ToPPM() string {
 	var color tuple.Color
 	var colorString string
 	for i := uint16(0); i < c.Height; i++ {
-		s.WriteString("\n")
 		for e := uint16(0); e < c.Width; e++ {
 			// So it nevers go over 70 Characters each line
 			// ((colors(5 * 3) * 3 (if all are 3 digit number)) + whiteSpace(5 * 3)
@@ -75,8 +74,8 @@ func (c *Canvas) ToPPM() string {
 			)
 			s.WriteString(colorString)
 		}
+		s.WriteString("\n")
 	}
-	s.WriteString("\n")
 	return s.String()
 }
 
