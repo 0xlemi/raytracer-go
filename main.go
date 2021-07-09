@@ -1,9 +1,12 @@
 package main
 
 import (
-	"fmt"
+
 	// "os"
 
+	"fmt"
+
+	m "github.com/lemidev/raytracer/pkg/matrix"
 	// c "github.com/lemidev/raytracer/pkg/canvas"
 	// p "github.com/lemidev/raytracer/pkg/physical"
 	// t "github.com/lemidev/raytracer/pkg/tuple"
@@ -35,8 +38,15 @@ func main() {
 	// 	proj.Tick(env)
 	// 	// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
 	// }
+	matrix := m.NewMatrix3([3][3]float64{
+		{1, 2, 3},
+		{5.5, 6.5, 7.5},
+		{8, 9, 10},
+	})
+	subS, _ := matrix.Submatrix(2, 1)
+	fmt.Println(subS)
 
-	fmt.Print(fmt.Sprint([4][4]float64{}))
+	// fmt.Print(fmt.Sprint([4][4]float64{}))
 	// fmt.Println([4][4]float64{})
 
 	// ppmData := canvas.ToPPM()

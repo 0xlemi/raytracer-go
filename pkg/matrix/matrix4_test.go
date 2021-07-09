@@ -14,6 +14,20 @@ func TestMatrix4Construct(t *testing.T) {
 	}
 }
 
+func TestMatrix4ConstructWithValues(t *testing.T) {
+	expected := "[[1 2 3 4] [5.5 6.5 7.5 8.5] [9 10 11 12] [13.5 14.5 15.5 16.5]]"
+	actual := fmt.Sprint(NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{5.5, 6.5, 7.5, 8.5},
+		{9, 10, 11, 12},
+		{13.5, 14.5, 15.5, 16.5},
+	}).Elements)
+
+	if actual != expected {
+		t.Errorf("TestMatrix4ConstructWithValues test error. Expected %v, got %v", expected, actual)
+	}
+}
+
 func TestMatrix4WriteElem(t *testing.T) {
 	expected := "[[1 0 0 4] [5.5 0 7.5 0] [0 0 11 0] [13.5 0 15.5 0]]"
 	m := NewMatrix4()
@@ -76,5 +90,77 @@ func TestMatrix4Equals(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("TestMatrix4Equals test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrixMulti(t *testing.T) {
+	a := NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 8, 7, 6},
+		{5, 4, 3, 2},
+	})
+	b := NewMatrix4([4][4]float64{
+		{-2, 1, 2, 3},
+		{3, 2, 1, -1},
+		{4, 3, 6, 5},
+		{1, 2, 7, 8},
+	})
+	res := NewMatrix4([4][4]float64{
+		{20, 22, 50, 48},
+		{44, 54, 114, 108},
+		{40, 58, 110, 102},
+		{16, 26, 46, 42},
+	})
+	expected := res
+	actual := a.Multi(b)
+
+	if actual != expected {
+		t.Errorf("TestMatrixMulti test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMultiIdentityMatrix(t *testing.T) {
+  a := NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 8, 7, 6},
+		{5, 4, 3, 2},
+	})
+	expected := a
+	actual := a.Multi(IDENTITY_MATRIX4)
+
+	if actual != expected {
+		t.Errorf("TestMultiIdentityMatrix test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4Transposing(t *testing.T) {
+  a := NewMatrix4([4][4]float64{
+		{0, 9, 3, 0},
+		{9, 8, 0, 8},
+		{1, 8, 5, 3},
+		{0, 0, 5, 8},
+	})
+  b := NewMatrix4([4][4]float64{
+		{0, 9, 1, 0},
+		{9, 8, 8, 0},
+		{3, 0, 5, 5},
+		{0, 8, 3, 8},
+	})
+	expected := b
+	actual := a.Transpose()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Transposing test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4TransposingIdentityMatrix(t *testing.T) {
+	expected := IDENTITY_MATRIX4
+	actual := IDENTITY_MATRIX4.Transpose()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4TransposingIdentityMatrix test error. Expected %v, got %v", expected, actual)
 	}
 }
