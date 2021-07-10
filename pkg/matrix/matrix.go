@@ -5,6 +5,7 @@ type Matrix interface {
 	ReadElem()
 }
 
+// const EPSILON float64 = 0.1
 const EPSILON float64 = 0.00001
 
 // // Generalized function

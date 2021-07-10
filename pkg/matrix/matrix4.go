@@ -56,6 +56,17 @@ func (m1 Matrix4) Equals(m2 Matrix4) bool {
 	return result
 }
 
+func (m Matrix4) Scale(num float64) Matrix4 {
+	new := NewMatrix4()
+	for row := uint8(0); row < 4; row++ {
+		for col := uint8(0); col < 4; col++ {
+			curVal := m.ReadElem(row, col)
+			new = new.WriteElem(row, col, curVal*num)
+		}
+	}
+	return new
+}
+
 // Multily by another matrix
 func (m1 Matrix4) Multi(m2 Matrix4) Matrix4 {
 	matrix := NewMatrix4()
@@ -90,7 +101,7 @@ func (m Matrix4) Submatrix(delRow, delCol uint8) (Matrix3, error) {
 	// Check that delRow and delCol are not greater than 2 becouse
 	// Matrix3 only is 3x3
 	if (delRow > 3) || (delCol > 3) {
-		return NewMatrix3(), errors.New("Matrix4 Submatrix Method does not accept rows or cols greater than 2")
+		return NewMatrix3(), errors.New("Matrix4.Submatrix does not accept rows or cols greater than 2")
 	}
 
 	subM := [3][3]float64{}
@@ -156,4 +167,34 @@ func (m Matrix4) Determinant() (float64, error) {
 		res += co * num
 	}
 	return res, nil
+}
+
+func (m Matrix4) Inverse() (Matrix4, error) {
+	det, err := m.Determinant()
+	if err != nil {
+		return NewMatrix4(), fmt.Errorf("error Matrix4.Inverse: %w", err)
+	}
+
+	if det == 0.0 {
+		return NewMatrix4(), errors.New("Matrix4.Inverse matrix not inversable because determinant = 0")
+	}
+
+	inv := NewMatrix4()
+	for row := uint8(0); row < 4; row++ {
+		for col := uint8(0); col < 4; col++ {
+
+			// Relpace values with cofactors
+			co, err := m.Cofactor(row, col)
+			if err != nil {
+				return NewMatrix4(), fmt.Errorf("error Matrix4.Inverse: %w", err)
+			}
+			inv = inv.WriteElem(row, col, co)
+		}
+	}
+	// Transpose the inverted array
+	tra := inv.Transpose()
+
+	// Divade all the elements with the original determinant
+	new := tra.Scale(1.0 / det)
+	return new, nil
 }

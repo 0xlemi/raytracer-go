@@ -109,6 +109,26 @@ func TestMatrix4Equals(t *testing.T) {
 	}
 }
 
+func TestMatrix4Scale(t *testing.T) {
+	expected := NewMatrix4([4][4]float64{
+		{2, 4, 6, 8},
+		{11, 13, 15, 17},
+		{18, 20, 22, 24},
+		{27, 29, 31, 33},
+	})
+	m := NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{5.5, 6.5, 7.5, 8.5},
+		{9, 10, 11, 12},
+		{13.5, 14.5, 15.5, 16.5},
+	})
+	actual := m.Scale(2)
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Scale test error. Expected %v, got %v", expected, actual)
+	}
+}
+
 func TestMatrixMulti(t *testing.T) {
 	a := NewMatrix4([4][4]float64{
 		{1, 2, 3, 4},
@@ -259,7 +279,7 @@ func TestMatrix4Cofactor(t *testing.T) {
 
 func TestMatrix4Determinant(t *testing.T) {
 	expected := -4071.0
-  m := NewMatrix4([4][4]float64{
+	m := NewMatrix4([4][4]float64{
 		{-2, -8, 3, 5},
 		{-3, 1, 7, 3},
 		{1, 2, -9, 6},
@@ -269,5 +289,56 @@ func TestMatrix4Determinant(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("TestMatrix4Determinant test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4IsNotInvertable(t *testing.T) {
+	expected := 0.0
+	m := NewMatrix4([4][4]float64{
+		{-4, 2, -2, -3},
+		{9, 6, 2, 6},
+		{0, -5, 1, -5},
+		{0, 0, 0, 0},
+	})
+	actual, _ := m.Determinant()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4IsInvertable test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4Inverse(t *testing.T) {
+	expected := NewMatrix4([4][4]float64{
+		{0.21805, 0.45113, 0.24060, -0.04511},
+		{-0.80827, -1.45677, -0.44361, 0.52068},
+		{-0.07895, -0.22368, -0.05263, 0.19737},
+		{-0.52256, -0.81391, -0.30075, 0.30639},
+	})
+	m := NewMatrix4([4][4]float64{
+		{-5, 2, 6, -8},
+		{1, -5, 1, 8},
+		{7, 7, -6, -7},
+		{1, -3, 7, 4},
+	})
+	actual, _ := m.Inverse()
+
+	if !actual.Equals(expected) {
+		t.Errorf("TestMatrix4Inverse test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4InverseOfNotInvertible(t *testing.T) {
+	expected := "*errors.errorString"
+  m := NewMatrix4([4][4]float64{
+		{-4, 2, -2, -3},
+		{9, 6, 2, 6},
+		{0, -5, 1, -5},
+		{0, 0, 0, 0},
+	})
+	_, err := m.Inverse()
+	actual := reflect.TypeOf(err).String()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4InverseOfNotInvertible test error. Expected %v, got %v", expected, actual)
 	}
 }
