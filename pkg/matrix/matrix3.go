@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Matrix3 struct {
@@ -54,4 +55,39 @@ func (m Matrix3) Submatrix(delRow, delCol uint8) (Matrix2, error) {
 	}
 
 	return NewMatrix2(subM), nil
+}
+
+func (m Matrix3) Minor(row, col uint8) (float64, error) {
+	subM, err := m.Submatrix(row, col)
+	if err != nil {
+		return -1, fmt.Errorf("error Matrix3.Minor: %w", err)
+	}
+	return subM.Determinant(), nil
+}
+
+func (m Matrix3) Cofactor(row, col uint8) (float64, error) {
+	minor, err := m.Minor(row, col)
+	if err != nil {
+		return -1, fmt.Errorf("error Matrix3.Cofactor: %w", err)
+	}
+	// check if row + col is even
+	isEven := ((row+col)%2 == 0)
+
+	if isEven {
+		return minor, nil
+	}
+	return (minor * -1), nil
+}
+
+func (m Matrix3) Determinant() (float64, error) {
+	row := m.Elements[0]
+	res := 0.0
+	for i, num := range row {
+		co, err := m.Cofactor(0, uint8(i))
+		if err != nil {
+			return -1, fmt.Errorf("error Matrix3.Determinant: %w", err)
+		}
+		res += co * num
+	}
+	return res, nil
 }

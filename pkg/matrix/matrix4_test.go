@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -68,6 +69,21 @@ func TestMatrix4ReadElem(t *testing.T) {
 	}
 }
 
+func TestMatrix4GetColumn(t *testing.T) {
+	expected := [4]float64{2, 6.5, 10, 14.5}
+	m := NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{5.5, 6.5, 7.5, 8.5},
+		{9, 10, 11, 12},
+		{13.5, 14.5, 15.5, 16.5},
+	})
+	actual := m.GetColumn(1)
+
+	if actual != expected {
+		t.Errorf("TestMatrix4GetColumn test error. Expected %v, got %v", expected, actual)
+	}
+}
+
 func TestMatrix4Equals(t *testing.T) {
 
 	m1 := [4][4]float64{
@@ -121,7 +137,7 @@ func TestMatrixMulti(t *testing.T) {
 }
 
 func TestMultiIdentityMatrix(t *testing.T) {
-  a := NewMatrix4([4][4]float64{
+	a := NewMatrix4([4][4]float64{
 		{1, 2, 3, 4},
 		{5, 6, 7, 8},
 		{9, 8, 7, 6},
@@ -136,13 +152,13 @@ func TestMultiIdentityMatrix(t *testing.T) {
 }
 
 func TestMatrix4Transposing(t *testing.T) {
-  a := NewMatrix4([4][4]float64{
+	a := NewMatrix4([4][4]float64{
 		{0, 9, 3, 0},
 		{9, 8, 0, 8},
 		{1, 8, 5, 3},
 		{0, 0, 5, 8},
 	})
-  b := NewMatrix4([4][4]float64{
+	b := NewMatrix4([4][4]float64{
 		{0, 9, 1, 0},
 		{9, 8, 8, 0},
 		{3, 0, 5, 5},
@@ -162,5 +178,96 @@ func TestMatrix4TransposingIdentityMatrix(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("TestMatrix4TransposingIdentityMatrix test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4Submatrix(t *testing.T) {
+	expected := NewMatrix3([3][3]float64{
+		{-6, 1, 6},
+		{-8, 8, 6},
+		{-7, -1, 1},
+	})
+	m := NewMatrix4([4][4]float64{
+		{-6, 1, 1, 6},
+		{-8, 5, 8, 6},
+		{-1, 0, 8, 2},
+		{-7, 1, -1, 1},
+	})
+	actual, _ := m.Submatrix(2, 1)
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Submatrix test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4Submatrix2(t *testing.T) {
+	expected := NewMatrix3([3][3]float64{
+		{-6, 1, 6},
+		{-8, 5, 6},
+		{-1, 0, 2},
+	})
+	m := NewMatrix4([4][4]float64{
+		{-6, 1, 1, 6},
+		{-8, 5, 8, 6},
+		{-1, 0, 8, 2},
+		{-7, 1, -1, 1},
+	})
+	actual, _ := m.Submatrix(3, 2)
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Submatrix2 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4SubmatrixError(t *testing.T) {
+	expected := "*errors.errorString"
+	m := NewMatrix4([4][4]float64{
+		{-6, 1, 1, 6},
+		{-8, 5, 8, 6},
+		{-1, 0, 8, 2},
+		{-7, 1, -1, 1},
+	})
+	_, err := m.Submatrix(4, 2)
+	actual := reflect.TypeOf(err).String()
+
+	if actual != expected {
+		t.Errorf("TestMatrixpSubmatrixError test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+// No need for minor test. This also test minor
+func TestMatrix4Cofactor(t *testing.T) {
+	expected := [4]float64{690, 447, 210, 51}
+	m := NewMatrix4([4][4]float64{
+		{-2, -8, 3, 5},
+		{-3, 1, 7, 3},
+		{1, 2, -9, 6},
+		{-6, 7, 7, -9},
+	})
+	co1, _ := m.Cofactor(0, 0)
+	co2, _ := m.Cofactor(0, 1)
+	co3, _ := m.Cofactor(0, 2)
+	co4, _ := m.Cofactor(0, 3)
+	actual := [4]float64{
+		co1, co2, co3, co4,
+	}
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Cofactor test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4Determinant(t *testing.T) {
+	expected := -4071.0
+  m := NewMatrix4([4][4]float64{
+		{-2, -8, 3, 5},
+		{-3, 1, 7, 3},
+		{1, 2, -9, 6},
+		{-6, 7, 7, -9},
+	})
+	actual, _ := m.Determinant()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4Determinant test error. Expected %v, got %v", expected, actual)
 	}
 }

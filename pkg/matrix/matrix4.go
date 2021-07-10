@@ -1,6 +1,8 @@
 package matrix
 
 import (
+	"errors"
+	"fmt"
 	"math"
 )
 
@@ -33,16 +35,25 @@ func (m Matrix4) ReadElem(row, col uint8) float64 {
 	return m.Elements[row][col]
 }
 
-// func (m Matrix4) GetRow(num uint8) [4]float64 {
-// 	return m.Elements[num]
-// }
-
 func (m Matrix4) GetColumn(num uint8) [4]float64 {
 	res := [4]float64{}
 	for i := 0; i < 4; i++ {
 		res[i] = m.Elements[i][num]
 	}
 	return res
+}
+
+func (m1 Matrix4) Equals(m2 Matrix4) bool {
+	result := true
+	for row := 0; row < 4; row++ {
+		for column := 0; column < 4; column++ {
+			m1Value := m1.ReadElem(uint8(row), uint8(column))
+			m2Value := m2.ReadElem(uint8(row), uint8(column))
+			difference := m1Value - m2Value
+			result = result && (math.Abs(difference) < EPSILON)
+		}
+	}
+	return result
 }
 
 // Multily by another matrix
@@ -75,15 +86,74 @@ func (m Matrix4) Transpose() Matrix4 {
 	return matrix
 }
 
-func (m1 Matrix4) Equals(m2 Matrix4) bool {
-	result := true
-	for row := 0; row < 4; row++ {
-		for column := 0; column < 4; column++ {
-			m1Value := m1.ReadElem(uint8(row), uint8(column))
-			m2Value := m2.ReadElem(uint8(row), uint8(column))
-			difference := m1Value - m2Value
-			result = result && (math.Abs(difference) < EPSILON)
-		}
+func (m Matrix4) Submatrix(delRow, delCol uint8) (Matrix3, error) {
+	// Check that delRow and delCol are not greater than 2 becouse
+	// Matrix3 only is 3x3
+	if (delRow > 3) || (delCol > 3) {
+		return NewMatrix3(), errors.New("Matrix4 Submatrix Method does not accept rows or cols greater than 2")
 	}
-	return result
+
+	subM := [3][3]float64{}
+	subRow := uint8(0)
+	subCol := uint8(0)
+	for row := uint8(0); row < 4; row++ {
+		if row == delRow {
+			continue
+		}
+		for col := uint8(0); col < 4; col++ {
+			if col == delCol {
+				continue
+			}
+			// Add Values to new [2][2] Array
+			subM[subRow][subCol] = m.ReadElem(row, col)
+			subCol++
+		}
+		// Reset the Col because is a 2d Array
+		subCol = 0
+		subRow++
+	}
+
+	return NewMatrix3(subM), nil
+}
+
+func (m Matrix4) Minor(row, col uint8) (float64, error) {
+
+	subM, err := m.Submatrix(row, col)
+	if err != nil {
+		return -1, fmt.Errorf("error Matrix4.Minor: %w", err)
+	}
+
+	det, err := subM.Determinant()
+	if err != nil {
+		return -1, fmt.Errorf("error Matrix4.Minor: %w", err)
+	}
+
+	return det, nil
+}
+
+func (m Matrix4) Cofactor(row, col uint8) (float64, error) {
+	minor, err := m.Minor(row, col)
+	if err != nil {
+		return -1, fmt.Errorf("error Matrix4.Cofactor: %w", err)
+	}
+
+	isEven := ((row+col)%2 == 0)
+
+	if isEven {
+		return minor, nil
+	}
+	return (minor * -1), nil
+}
+
+func (m Matrix4) Determinant() (float64, error) {
+	row := m.Elements[0]
+	res := 0.0
+	for i, num := range row {
+		co, err := m.Cofactor(0, uint8(i))
+		if err != nil {
+			return -1, fmt.Errorf("error Matrix4.Determinant: %w", err)
+		}
+		res += co * num
+	}
+	return res, nil
 }

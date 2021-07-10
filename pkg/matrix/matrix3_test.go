@@ -1,8 +1,8 @@
 package matrix
 
 import (
-	"reflect"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -104,9 +104,78 @@ func TestMatrix3SubmatrixError(t *testing.T) {
 		{8, 9, 10},
 	})
 	_, err := m.Submatrix(3, 1)
-	actual := reflect.TypeOf(err).String() 
+	actual := reflect.TypeOf(err).String()
 
 	if actual != expected {
-		t.Errorf("TestMatrix3Submatrix2 test error. Expected %v, got %v", expected, actual)
+		t.Errorf("TestMatrix3SubmatrixError test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix3CalculateMinor(t *testing.T) {
+	expected := 25.0
+	m := NewMatrix3([3][3]float64{
+		{3, 5, 0},
+		{2, -1, -7},
+		{6, -1, 5},
+	})
+	subM, _ := m.Submatrix(1, 0)
+	actual := subM.Determinant()
+
+	if actual != expected {
+		t.Errorf("TestMatrix3CalculateMinor test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix3Minor(t *testing.T) {
+	expected := 25.0
+	m := NewMatrix3([3][3]float64{
+		{3, 5, 0},
+		{2, -1, -7},
+		{6, -1, 5},
+	})
+	actual, _ := m.Minor(1, 0)
+
+	if actual != expected {
+		t.Errorf("TestMatrix3Minor test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix3Cofactor(t *testing.T) {
+	expected := [4]float64{-12, -12, 25, -25}
+	m := NewMatrix3([3][3]float64{
+		{3, 5, 0},
+		{2, -1, -7},
+		{6, -1, 5},
+	})
+	minor1, _ := m.Minor(0, 0)
+	cofactor1, _ := m.Cofactor(0, 0)
+	minor2, _ := m.Minor(1, 0)
+	cofactor2, _ := m.Cofactor(1, 0)
+	actual := [4]float64{
+		minor1, cofactor1, minor2, cofactor2,
+	}
+
+	if actual != expected {
+		t.Errorf("TestMatrix3Cofactor test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix3Determinant(t *testing.T) {
+	expected := [4]float64{56, 12, -46, -196}
+	m := NewMatrix3([3][3]float64{
+		{1, 2, 6},
+		{-5, 8, -4},
+		{2, 6, 4},
+	})
+	co1, _ := m.Cofactor(0, 0)
+	co2, _ := m.Cofactor(0, 1)
+	co3, _ := m.Cofactor(0, 2)
+	det, _ := m.Determinant()
+	actual := [4]float64{
+		co1, co2, co3, det,
+	}
+
+	if actual != expected {
+		t.Errorf("TestMatrix3Determinant test error. Expected %v, got %v", expected, actual)
 	}
 }
