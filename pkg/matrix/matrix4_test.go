@@ -329,7 +329,7 @@ func TestMatrix4Inverse(t *testing.T) {
 
 func TestMatrix4InverseOfNotInvertible(t *testing.T) {
 	expected := "*errors.errorString"
-  m := NewMatrix4([4][4]float64{
+	m := NewMatrix4([4][4]float64{
 		{-4, 2, -2, -3},
 		{9, 6, 2, 6},
 		{0, -5, 1, -5},
@@ -340,5 +340,54 @@ func TestMatrix4InverseOfNotInvertible(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("TestMatrix4InverseOfNotInvertible test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4MultiplyingByInverse(t *testing.T) {
+	a := NewMatrix4([4][4]float64{
+		{3, -9, 7, 3},
+		{3, -8, 2, -9},
+		{-4, 4, 4, 1},
+		{-6, 5, -1, 1},
+	})
+	b := NewMatrix4([4][4]float64{
+		{8, 2, 2, 2},
+		{3, -1, 7, 0},
+		{7, 0, 5, 4},
+		{6, -2, 0, 5},
+	})
+	expected := a
+
+	invB, _ := b.Inverse()
+	actual := a.Multi(b).Multi(invB)
+
+	if !actual.Equals(expected) {
+		t.Errorf("TestMatrix4MultiplyingByInverse test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4InverseIdentityMatrix(t *testing.T) {
+	expected := IDENTITY_MATRIX4
+	actual, _ := IDENTITY_MATRIX4.Inverse()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4InverseIdentityMatrix test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4InverseTransposeEqualsTransposeInverse(t *testing.T) {
+	a := NewMatrix4([4][4]float64{
+		{3, -9, 7, 3},
+		{3, -8, 2, -9},
+		{-4, 4, 4, 1},
+		{-6, 5, -1, 1},
+	})
+	aInv, _ := a.Inverse()
+
+	expected := aInv.Transpose()
+	actual, _ := a.Transpose().Inverse()
+
+	if actual != expected {
+		t.Errorf("TestMatrix4InverseTransposeEqualsTransposeInverse test error. Expected %v, got %v", expected, actual)
 	}
 }

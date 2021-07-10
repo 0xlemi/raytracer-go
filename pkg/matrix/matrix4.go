@@ -179,22 +179,21 @@ func (m Matrix4) Inverse() (Matrix4, error) {
 		return NewMatrix4(), errors.New("Matrix4.Inverse matrix not inversable because determinant = 0")
 	}
 
-	inv := NewMatrix4()
+	new := NewMatrix4()
 	for row := uint8(0); row < 4; row++ {
 		for col := uint8(0); col < 4; col++ {
 
-			// Relpace values with cofactors
 			co, err := m.Cofactor(row, col)
 			if err != nil {
 				return NewMatrix4(), fmt.Errorf("error Matrix4.Inverse: %w", err)
 			}
-			inv = inv.WriteElem(row, col, co)
+
+			// We need 3 Oparations
+			// 1) Relpace values with cofactors
+			// 2) Transpose the inverted array. Thats why (col, row) instead of (row, col)
+			// 3) Divade all the elements with the original determinant
+			new = new.WriteElem(col, row, co/det)
 		}
 	}
-	// Transpose the inverted array
-	tra := inv.Transpose()
-
-	// Divade all the elements with the original determinant
-	new := tra.Scale(1.0 / det)
 	return new, nil
 }

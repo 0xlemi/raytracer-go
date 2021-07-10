@@ -14,6 +14,22 @@ import (
 
 func main() {
 
+	// idInv, _ := m.IDENTITY_MATRIX4.Inverse()
+	// fmt.Println(m.IDENTITY_MATRIX4.Equals(idInv))
+	// fmt.Println(idInv)
+
+	a := m.NewMatrix4([4][4]float64{
+		{3, -9, 7, 3},
+		{3, -8, 2, -9},
+		{-4, 4, 4, 1},
+		{-6, 5, -1, 1},
+	})
+	aInv, _ := a.Inverse()
+	aInvTra := aInv.Transpose()
+	aTraInv, _ := a.Transpose().Inverse()
+	fmt.Println(aInvTra)
+	fmt.Println(aTraInv)
+
 	// start := t.NewPoint(0, 1, 0)
 	// velocity := t.NewVector(1, 1.8, 0).Normalize()
 
@@ -38,13 +54,13 @@ func main() {
 	// 	proj.Tick(env)
 	// 	// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
 	// }
-	matrix := m.NewMatrix3([3][3]float64{
-		{1, 2, 3},
-		{5.5, 6.5, 7.5},
-		{8, 9, 10},
-	})
-	subS, _ := matrix.Submatrix(2, 1)
-	fmt.Println(subS)
+	// matrix := m.NewMatrix3([3][3]float64{
+	// 	{1, 2, 3},
+	// 	{5.5, 6.5, 7.5},
+	// 	{8, 9, 10},
+	// })
+	// subS, _ := matrix.Submatrix(2, 1)
+	// fmt.Println(subS)
 
 	// fmt.Print(fmt.Sprint([4][4]float64{}))
 	// fmt.Println([4][4]float64{})
