@@ -24,6 +24,15 @@ func TestVectorConstructor(t *testing.T) {
 	}
 }
 
+func TestVectorToTuple(t *testing.T) {
+	expected := Tuple{X: 1.1, Y: 2.5, Z: 3.0, W:0.0}
+	actual := NewVector(1.1, 2.5, 3.0).ToTuple()
+
+	if actual != expected {
+		t.Errorf("TestVectorToTuple test error. Expected %v, got %v", expected, actual)
+	}
+}
+
 // Check equality of Tuples.
 // Because sometimes floats can generate round-off errors.
 // That negate valid equalities. Where precision is [0.00001]

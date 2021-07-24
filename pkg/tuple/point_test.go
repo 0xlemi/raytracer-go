@@ -23,6 +23,15 @@ func TestPointConstructor(t *testing.T) {
 	}
 }
 
+func TestPointToTuple(t *testing.T) {
+	expected := Tuple{X: 1.1, Y: 2.5, Z: 3.0, W: 1.0}
+	actual := NewPoint(1.1, 2.5, 3.0).ToTuple()
+
+	if actual != expected {
+		t.Errorf("TestPointToTuple test error. Expected %v, got %v", expected, actual)
+	}
+}
+
 // Check equality of Tuples.
 // Because sometimes floats can generate round-off errors.
 // That negate valid equalities. Where precision is [0.00001]

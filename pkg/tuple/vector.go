@@ -4,8 +4,6 @@ import (
 	"math"
 )
 
-const EPSILON float64 = 0.00001
-
 type Vector struct {
 	X, Y, Z float64
 }
@@ -14,11 +12,12 @@ func NewVector(x float64, y float64, z float64) Vector {
 	return Vector{x, y, z}
 }
 
+func (v Vector) ToTuple() Tuple {
+	return Tuple{v.X, v.Y, v.Z, 0.0}
+}
+
 func (v1 Vector) Equals(v2 Vector) bool {
-	equalX := math.Abs(v1.X-v2.X) < EPSILON
-	equalY := math.Abs(v1.Y-v2.Y) < EPSILON
-	equalZ := math.Abs(v1.Z-v2.Z) < EPSILON
-	return equalX && equalY && equalZ
+	return v1.ToTuple().Equals(v2.ToTuple())
 }
 
 // Add 2 Vectors

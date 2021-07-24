@@ -1,9 +1,5 @@
 package tuple
 
-import (
-	"math"
-)
-
 type Point struct {
 	X, Y, Z float64
 }
@@ -12,11 +8,12 @@ func NewPoint(x float64, y float64, z float64) Point {
 	return Point{x, y, z}
 }
 
+func (p Point) ToTuple() Tuple {
+	return Tuple{p.X, p.Y, p.Z, 1.0}
+}
+
 func (p1 Point) Equals(p2 Point) bool {
-	equalX := math.Abs(p1.X-p2.X) < EPSILON
-	equalY := math.Abs(p1.Y-p2.Y) < EPSILON
-	equalZ := math.Abs(p1.Z-p2.Z) < EPSILON
-	return equalX && equalY && equalZ
+	return p1.ToTuple().Equals(p2.ToTuple())
 }
 
 // Get point on the tip of the vector origining from p

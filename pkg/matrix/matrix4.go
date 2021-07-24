@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+
+	t "github.com/lemidev/raytracer/pkg/tuple"
 )
 
 var IDENTITY_MATRIX4 Matrix4 = NewMatrix4([4][4]float64{
@@ -56,7 +58,7 @@ func (m1 Matrix4) Equals(m2 Matrix4) bool {
 	return result
 }
 
-func (m Matrix4) Scale(num float64) Matrix4 {
+func (m Matrix4) LinearlyScale(num float64) Matrix4 {
 	new := NewMatrix4()
 	for row := uint8(0); row < 4; row++ {
 		for col := uint8(0); col < 4; col++ {
@@ -84,9 +86,24 @@ func (m1 Matrix4) Multi(m2 Matrix4) Matrix4 {
 }
 
 // Multilpy By Tuple function
-// func ()  {
+func (m Matrix4) MultiTuple(tuple t.Tuple) t.Tuple {
+	oldTuple := tuple.ToArray()
+	new := t.NewTuple(0, 0, 0, 0)
+	for row := uint8(0); row < 4; row++ {
+		result :=
+			m.ReadElem(row, 0)*oldTuple[0] +
+				m.ReadElem(row, 1)*oldTuple[1] +
+				m.ReadElem(row, 2)*oldTuple[2] +
+				m.ReadElem(row, 3)*oldTuple[3]
+		new = new.WriteElem(row, result) 
+	}
+	return new
+}
 
-// }
+func (m Matrix4) MultiTL(tl t.TupleLike) t.TupleLike {
+	t := m.MultiTuple(tl.ToTuple())
+	return t.ToTupleLike()
+}
 
 func (m Matrix4) Transpose() Matrix4 {
 	matrix := NewMatrix4()
@@ -196,4 +213,24 @@ func (m Matrix4) Inverse() (Matrix4, error) {
 		}
 	}
 	return new, nil
+}
+
+func (m Matrix4) Translate(x, y, z float64) Matrix4 {
+	return Translation(x, y, z).Multi(m)
+}
+
+func (m Matrix4) Scaling(x, y, z float64) Matrix4 {
+	return Scaling(x, y, z).Multi(m)
+}
+
+func (m Matrix4) RotateX(r float64) Matrix4 {
+	return RotationX(r).Multi(m)
+}
+
+func (m Matrix4) RotateY(r float64) Matrix4 {
+	return RotationY(r).Multi(m)
+}
+
+func (m Matrix4) RotateZ(r float64) Matrix4 {
+	return RotationZ(r).Multi(m)
 }

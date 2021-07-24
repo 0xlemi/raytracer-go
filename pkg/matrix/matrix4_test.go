@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/lemidev/raytracer/pkg/tuple"
 )
 
 func TestMatrix4Construct(t *testing.T) {
@@ -109,7 +111,7 @@ func TestMatrix4Equals(t *testing.T) {
 	}
 }
 
-func TestMatrix4Scale(t *testing.T) {
+func TestMatrix4LinearlyScale(t *testing.T) {
 	expected := NewMatrix4([4][4]float64{
 		{2, 4, 6, 8},
 		{11, 13, 15, 17},
@@ -122,7 +124,7 @@ func TestMatrix4Scale(t *testing.T) {
 		{9, 10, 11, 12},
 		{13.5, 14.5, 15.5, 16.5},
 	})
-	actual := m.Scale(2)
+	actual := m.LinearlyScale(2)
 
 	if actual != expected {
 		t.Errorf("TestMatrix4Scale test error. Expected %v, got %v", expected, actual)
@@ -153,6 +155,30 @@ func TestMatrixMulti(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("TestMatrixMulti test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4MultiTuple(t *testing.T) {
+	expected := tuple.NewTuple(18, 24, 33, 1)
+	m := NewMatrix4([4][4]float64{
+		{1, 2, 3, 4},
+		{2, 4, 4, 2},
+		{8, 6, 4, 1},
+		{0, 0, 0, 1},
+	})
+	actual := m.MultiTuple(tuple.NewTuple(1, 2, 3, 1))
+
+	if actual != expected {
+		t.Errorf("TestMatrix4MultiTuple test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestMatrix4MultiTupleIdentity(t *testing.T) {
+	expected := tuple.NewTuple(18, 24, 33, 1)
+	actual := IDENTITY_MATRIX4.MultiTuple(tuple.NewTuple(18, 24, 33, 1))
+
+	if actual != expected {
+		t.Errorf("TestMatrix4MultiTupleIdentity test error. Expected %v, got %v", expected, actual)
 	}
 }
 
