@@ -3,11 +3,14 @@ package main
 import (
 
 	// "os"
+	// "math"
+	// "os"
 
-	"fmt"
+	// "fmt"
 
-	m "github.com/lemidev/raytracer/pkg/matrix"
 	// c "github.com/lemidev/raytracer/pkg/canvas"
+	// m "github.com/lemidev/raytracer/pkg/matrix"
+
 	// p "github.com/lemidev/raytracer/pkg/physical"
 	// t "github.com/lemidev/raytracer/pkg/tuple"
 )
@@ -18,17 +21,22 @@ func main() {
 	// fmt.Println(m.IDENTITY_MATRIX4.Equals(idInv))
 	// fmt.Println(idInv)
 
-	a := m.NewMatrix4([4][4]float64{
-		{3, -9, 7, 3},
-		{3, -8, 2, -9},
-		{-4, 4, 4, 1},
-		{-6, 5, -1, 1},
-	})
-	aInv, _ := a.Inverse()
-	aInvTra := aInv.Transpose()
-	aTraInv, _ := a.Transpose().Inverse()
-	fmt.Println(aInvTra)
-	fmt.Println(aTraInv)
+	
+	// CreateCircle()
+
+	// fmt.Println(points)
+
+	// a := m.NewMatrix4([4][4]float64{
+	// 	{3, -9, 7, 3},
+	// 	{3, -8, 2, -9},
+	// 	{-4, 4, 4, 1},
+	// 	{-6, 5, -1, 1},
+	// })
+	// aInv, _ := a.Inverse()
+	// aInvTra := aInv.Transpose()
+	// aTraInv, _ := a.Transpose().Inverse()
+	// fmt.Println(aInvTra)
+	// fmt.Println(aTraInv)
 
 	// start := t.NewPoint(0, 1, 0)
 	// velocity := t.NewVector(1, 1.8, 0).Normalize()
@@ -40,19 +48,26 @@ func main() {
 
 	// env := p.NewEnvironment(gravity, wind)
 
-	// // canvas := c.NewCanvas(8, 6)
-	// // width 450
-	// // heigt 250
+	// width 450
+	// heigt 250
+
+	// for _, point := range points {
+	// canvas.WritePixel(uint16(point.X)+50, uint16(point.X)+50, t.NewColor(255, 255, 255))
+	// }
+
+	// for i := uint16(0); i < 30; i++ {
+	// canvas.WritePixel(i, i, t.NewColor(255, 255, 255))
+	// }
 
 	// actual := []t.Point{}
 	// for 0 < proj.Position.Y {
-	// 	actual = append(actual, proj.Position)
-	// 	// x := uint16(proj.Position.X)
-	// 	// y := (canvas.Height - 1) - uint16(proj.Position.Y)
-	// 	// y := uint16(proj.Position.Y)
-	// 	// fmt.Println([2]uint16{x, y})
-	// 	proj.Tick(env)
-	// 	// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
+	// actual = append(actual, proj.Position)
+	// x := uint16(proj.Position.X)
+	// y := (canvas.Height - 1) - uint16(proj.Position.Y)
+	// y := uint16(proj.Position.Y)
+	// fmt.Println([2]uint16{x, y})
+	// proj.Tick(env)
+	// canvas.WritePixel(x, y, t.NewColor(255, 255, 255))
 	// }
 	// matrix := m.NewMatrix3([3][3]float64{
 	// 	{1, 2, 3},
@@ -67,7 +82,7 @@ func main() {
 
 	// ppmData := canvas.ToPPM()
 
-	// file, err := os.Create("images/projectile.ppm")
+	// file, err := os.Create("images/clock.ppm")
 
 	// if err != nil {
 	// 	fmt.Println(err)
