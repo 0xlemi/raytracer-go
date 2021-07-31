@@ -141,3 +141,85 @@ func TestRotationZAxisFQ(t *testing.T) {
 		t.Errorf("TestRotationZAxisFQ test error. Expected %v, got %v", expected, actual)
 	}
 }
+
+func TestShearingPoint1(t *testing.T) {
+	expected := tuple.NewPoint(5, 3, 4)
+	actual := Shearing(1, 0, 0, 0, 0, 0).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint1 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestShearingPoint2(t *testing.T) {
+	expected := tuple.NewPoint(6, 3, 4)
+	actual := Shearing(0, 1, 0, 0, 0, 0).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint2 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestShearingPoint3(t *testing.T) {
+	expected := tuple.NewPoint(2, 5, 4)
+	actual := Shearing(0, 0, 1, 0, 0, 0).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint3 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestShearingPoint4(t *testing.T) {
+	expected := tuple.NewPoint(2, 7, 4)
+	actual := Shearing(0, 0, 0, 1, 0, 0).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint4 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestShearingPoint5(t *testing.T) {
+	expected := tuple.NewPoint(2, 3, 6)
+	actual := Shearing(0, 0, 0, 0, 1, 0).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint5 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestShearingPoint6(t *testing.T) {
+	expected := tuple.NewPoint(2, 3, 7)
+	actual := Shearing(0, 0, 0, 0, 0, 1).MultiTL(tuple.NewPoint(2, 3, 4))
+
+	if actual != expected {
+		t.Errorf("TestShearingPoint6 test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestRegularTransformations(t *testing.T) {
+	expected := tuple.NewPoint(15, 0, 7)
+	A := RotationX(math.Pi / 2)
+	B := Scaling(5, 5, 5)
+	C := Translation(10, 5, 7)
+	step1 := A.MultiTL(tuple.NewPoint(1, 0, 1))
+	step2 := B.MultiTL(step1)
+	step3 := C.MultiTL(step2)
+	actual := step3
+
+	if actual != expected {
+		t.Errorf("TestRegularTransformations test error. Expected %v, got %v", expected, actual)
+	}
+}
+
+func TestChainingTransformations(t *testing.T) {
+	expected := tuple.NewPoint(15, 0, 7)
+	actual := IDENTITY_MATRIX4.
+		RotateX(math.Pi / 2).
+		Scaling(5, 5, 5).
+		Translate(10, 5, 7).MultiTL(tuple.NewPoint(1, 0, 1))
+
+	if actual != expected {
+		t.Errorf("TestChainingTransformations test error. Expected %v, got %v", expected, actual)
+	}
+}
+
